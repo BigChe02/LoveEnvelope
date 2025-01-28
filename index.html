@@ -30,23 +30,45 @@
       position: absolute;
       top: 0;
       left: 0;
-      z-index: 2;
+      z-index: 5;
     }
 
     #reward {
       position: absolute;
-      top: 100%;
-      left: 50%;
+      top: 200%;
+      left: 42%;
       transform: translateX(-50%);
-      width: 150px;
+      width: 200px;
       opacity: 0;
-      z-index: 1;
+      z-index: 5;
       transition: top 1s ease, opacity 1s ease;
     }
 
     #reward.show {
       top: 30%;
       opacity: 1;
+    }
+
+    /* เอฟเฟคหัวใจ */
+    .heart {
+      position: fixed;
+      width: 30px;
+      height: 30px;
+      background-image: url('heart.png'); /* ใช้ภาพหัวใจที่คุณต้องการ */
+      background-size: cover;
+      opacity: 0.8;
+      pointer-events: none;
+      animation: heartRise 2s forwards;
+    }
+
+    @keyframes heartRise {
+      0% {
+        transform: translate(0, 0) scale(1.1);  /* เริ่มต้นที่ตำแหน่งต่ำสุด */
+      }
+      100% {
+        transform: translate(0, -300px) scale(0.5); /* ยกขึ้นไปข้างบน */
+        opacity: 0;
+      }
     }
   </style>
 </head>
@@ -57,7 +79,14 @@
     <img id="reward" src="reward.png" alt="รางวัล">
   </div>
 
+  <!-- เสียงเอฟเฟค -->
+  <audio id="soundEffect" src="sound-effect.mp3" preload="auto"></audio>
+
   <script>
+    // ลดเสียงลง 30%
+    const sound = document.getElementById("soundEffect");
+    sound.volume = 0.3;  // ลดเสียงลง 30%
+
     document.getElementById("red-envelope").addEventListener("click", function () {
       // ซ่อนซองอั่งเปา
       this.style.display = "none";
@@ -65,6 +94,27 @@
       // แสดงรางวัลพร้อมเอฟเฟกต์เลื่อน
       const reward = document.getElementById("reward");
       reward.classList.add("show");
+
+      // เล่นเสียงเอฟเฟค
+      sound.play();
+
+      // เอฟเฟคหัวใจ
+      for (let i = 0; i < 50; i++) {  // สร้างหัวใจ 50 ชิ้น
+        let heart = document.createElement("div");
+        heart.classList.add("heart");
+
+        // ตั้งค่าตำแหน่งเริ่มต้นแบบสุ่ม
+        heart.style.left = `${Math.random() * window.innerWidth}px`;
+        heart.style.top = `${Math.random() * window.innerHeight}px`;
+
+        // เพิ่มหัวใจลงในหน้า
+        document.body.appendChild(heart);
+
+        // กำหนดให้หัวใจหายไปหลังจากเวลาผ่านไป 1 วินาที
+        setTimeout(() => {
+          heart.remove();
+        }, 5000);
+      }
     });
   </script>
 </body>
